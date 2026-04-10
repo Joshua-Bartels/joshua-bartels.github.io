@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JOSH BARTELS // RESUME.EXE</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap" rel="stylesheet">
+<script>
+  function showPanel(id) {
+    document.querySelectorAll('.screen-panel').forEach(function(p) { p.classList.remove('active'); });
+    var target = document.getElementById('panel-' + id);
+    if (target) target.classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(function(btn) {
+      btn.classList.remove('active');
+      if (btn.getAttribute('data-panel') === id) btn.classList.add('active');
+    });
+  }
+</script>
+<style>
+  :root {
+    --gb-darkest: #0f380f;
+    --gb-dark: #306230;
+    --gb-mid: #8bac0f;
+    --gb-light: #9bbc0f;
+    --gb-lightest: #c4cfa1;
+    --gb-screen-bg: #9bbc0f;
+    --gb-shell: #c8c8b4;
+    --gb-shell-dark: #a8a894;
+    --gb-shell-darker: #888878;
+    --gb-purple: #6a4c8c;
+    --gb-red: #8c1c1c;
+    --gb-button: #2d1a4a;
+    --pixel: 4px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1a1a2e;
+    min-height: 100vh;
+    font-family: 'Press Start 2P', monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 10px 60px;
+    overflow-x: hidden;
+    background-image: 
+      radial-gradient(ellipse at 20% 50%, rgba(15,56,15,0.3) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(106,76,140,0.2) 0%, transparent 50%);
+  }
+
+  /* Scanline overlay for atmosphere */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* ===== TOP BAR ===== */
+  .top-bar {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    border: 3px solid var(--gb-mid);
+    background: rgba(15,56,15,0.8);
+    image-rendering: pixelated;
+  }
+
+  .top-bar-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(8px, 2vw, 14px);
+    color: var(--gb-light);
+    text-shadow: 2px 2px 0 var(--gb-darkest);
+    letter-spacing: 2px;
+  }
+
+  .blinking-cursor {
+    display: inline-block;
+    width: 10px;
+    height: 14px;
+    background: var(--gb-light);
+    animation: blink 1s step-end infinite;
+    vertical-align: middle;
+    margin-left: 4px;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  .battery-indicator {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    font-size: 8px;
+    color: var(--gb-mid);
+  }
+  .battery-bar {
+    width: 6px;
+    height: 12px;
+    background: var(--gb-mid);
+    animation: batteryPulse 2s ease-in-out infinite;
+  }
+  .battery-bar:nth-child(2) { animation-delay: 0.3s; }
+  .battery-bar:nth-child(3) { animation-delay: 0.6s; }
+  @keyframes batteryPulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* ===== MAIN LAYOUT ===== */
+  .main-container {
+    width: 100%;
+    max-width: 900px;
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 16px;
+  }
+
+  /* ===== SIDEBAR (Game Boy left panel) ===== */
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* ===== PROFILE CARD ===== */
+  .profile-card {
+    background: var(--gb-darkest);
+    border: 4px solid var(--gb-dark);
+    padding: 16px 12px;
+    position: relative;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.5), inset 0 0 0 2px rgba(155,188,15,0.1);
+  }
+  .profile-card::before {
+    content: 'PLAYER 1';
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    background: var(--gb-darkest);
+    color: var(--gb-mid);
+    font-size: 7px;
+    padding: 2px 6px;
+    border: 2px solid var(--gb-mid);
+  }
+
+  .avatar-frame {
+    width: 80px;
+    height: 80px;
+    margin: 8px auto 12px;
+    border: 4px solid var(--gb-mid);
+    background: var(--gb-screen-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    image-rendering: pixelated;
+  }
+
+  /* Pixel art soldier sprite using CSS */
+  .pixel-avatar {
+    width: 64px;
+    height: 64px;
+    position: relative;
+    image-rendering: pixelated;
+  }
+
+  .pixel-avatar svg {
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+  }
+
+  .profile-name {
+    font-size: 9px;
+    color: var(--gb-light);
+    text-align: center;
+    line-height: 1.8;
+    text-shadow: 1px 1px 0 var(--gb-darkest);
+    margin-bottom: 8px;
+  }
+
+  .profile-tag {
+    font-family: 'VT323', monospace;
+    font-size: 16px;
+    color: var(--gb-mid);
+    text-align: center;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .stat-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .stat-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .stat-label {
+    font-size: 6px;
+    color: var(--gb-mid);
+    width: 55px;
+    flex-shrink: 0;
+  }
+
+  .stat-bar-track {
+    flex: 1;
+    height: 8px;
+    background: var(--gb-darkest);
+    border: 2px solid var(--gb-dark);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-bar-fill {
+    height: 100%;
+    background: var(--gb-mid);
+    animation: fillBar 1.5s ease-out forwards;
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+  @keyframes fillBar { to { transform: scaleX(1); } }
+
+  /* ===== NAV MENU ===== */
+  .nav-menu {
+    background: var(--gb-darkest);
+    border: 4px solid var(--gb-dark);
+    padding: 12px 8px;
+    position: relative;
+  }
+  .nav-menu::before {
+    content: 'MENU';
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    background: var(--gb-darkest);
+    color: var(--gb-mid);
+    font-size: 7px;
+    padding: 2px 6px;
+    border: 2px solid var(--gb-mid);
+  }
+
+  .nav-item {
+    display: block;
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px 8px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    color: var(--gb-light);
+    text-align: left;
+    position: relative;
+    transition: all 0.1s;
+    border-bottom: 1px solid rgba(139,172,15,0.2);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-item:last-child { border-bottom: none; }
+
+  .nav-item:hover, .nav-item.active {
+    background: var(--gb-dark);
+    color: var(--gb-lightest);
+    padding-left: 16px;
+  }
+
+  .nav-item::before {
+    content: '▶';
+    font-size: 6px;
+    color: var(--gb-mid);
+    opacity: 0;
+    transition: opacity 0.1s;
+  }
+  .nav-item:hover::before, .nav-item.active::before { opacity: 1; }
+
+  /* ===== LINKS ===== */
+  .link-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .gb-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 8px;
+    background: var(--gb-button);
+    border: 3px solid #4a2a7a;
+    color: #d4aaff;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    text-decoration: none;
+    transition: all 0.1s;
+    box-shadow: 2px 2px 0 #1a0a2a;
+    position: relative;
+  }
+
+  .gb-link:hover {
+    background: #4a2a7a;
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 #1a0a2a;
+  }
+  .gb-link:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 #1a0a2a;
+  }
+
+  .gb-link-github { background: #1a2a1a; border-color: var(--gb-dark); color: var(--gb-light); }
+  .gb-link-github:hover { background: var(--gb-dark); }
+
+  /* ===== MAIN CONTENT ===== */
+  .content-area {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* ===== SCREEN PANELS ===== */
+  .screen-panel {
+    background: var(--gb-darkest);
+    border: 4px solid var(--gb-dark);
+    padding: 16px 14px;
+    position: relative;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.5);
+    display: none;
+  }
+
+  .screen-panel.active { display: block; }
+
+  .panel-header {
+    font-size: 10px;
+    color: var(--gb-light);
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--gb-dark);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-shadow: 2px 2px 0 var(--gb-darkest);
+  }
+  .panel-header-icon { font-size: 14px; }
+
+  /* ===== EXPERIENCE ENTRIES ===== */
+  .exp-entry {
+    padding: 12px 10px;
+    margin-bottom: 12px;
+    border: 2px solid var(--gb-dark);
+    background: rgba(48,98,48,0.1);
+    position: relative;
+    transition: all 0.15s;
+  }
+  .exp-entry:hover {
+    border-color: var(--gb-mid);
+    background: rgba(48,98,48,0.2);
+  }
+
+  .exp-company {
+    font-size: 9px;
+    color: var(--gb-light);
+    margin-bottom: 4px;
+  }
+
+  .exp-role {
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    color: var(--gb-mid);
+    margin-bottom: 6px;
+    line-height: 1.1;
+  }
+
+  .exp-dates {
+    font-size: 6px;
+    color: var(--gb-shell-dark);
+    margin-bottom: 10px;
+    font-family: 'VT323', monospace;
+    font-size: 16px;
+  }
+
+  .exp-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .exp-bullets li {
+    font-family: 'VT323', monospace;
+    font-size: 17px;
+    color: var(--gb-lightest);
+    line-height: 1.3;
+    padding-left: 14px;
+    position: relative;
+  }
+
+  .exp-bullets li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--gb-mid);
+  }
+
+  /* ===== SKILLS GRID ===== */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .skill-chip {
+    background: rgba(48,98,48,0.2);
+    border: 2px solid var(--gb-dark);
+    padding: 8px 10px;
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    color: var(--gb-light);
+    text-align: center;
+    transition: all 0.1s;
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .skill-chip:hover {
+    border-color: var(--gb-mid);
+    background: rgba(139,172,15,0.15);
+    transform: translate(-1px, -1px);
+  }
+
+  .skill-category-label {
+    font-size: 7px;
+    color: var(--gb-mid);
+    margin-bottom: 10px;
+    margin-top: 6px;
+    padding-left: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .skill-category-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--gb-dark);
+  }
+
+  /* ===== CERT CARDS ===== */
+  .cert-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border: 2px solid var(--gb-dark);
+    margin-bottom: 8px;
+    background: rgba(48,98,48,0.1);
+    transition: all 0.1s;
+  }
+  .cert-row:hover { border-color: var(--gb-mid); }
+  .cert-icon { font-size: 20px; }
+  .cert-text { font-family: 'VT323', monospace; font-size: 20px; color: var(--gb-lightest); }
+  .cert-sub { font-family: 'VT323', monospace; font-size: 15px; color: var(--gb-mid); display: block; }
+
+  /* ===== CONTACT SECTION ===== */
+  .contact-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border: 2px solid var(--gb-dark);
+    background: rgba(48,98,48,0.1);
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    color: var(--gb-lightest);
+    text-decoration: none;
+    transition: all 0.1s;
+  }
+  .contact-item:hover { border-color: var(--gb-mid); background: rgba(139,172,15,0.1); }
+  .contact-icon { font-size: 18px; width: 24px; text-align: center; }
+
+  /* ===== EDUCATION ===== */
+  .edu-entry {
+    padding: 12px 10px;
+    border: 2px solid var(--gb-dark);
+    margin-bottom: 10px;
+    background: rgba(48,98,48,0.1);
+  }
+  .edu-degree {
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    color: var(--gb-light);
+    margin-bottom: 4px;
+  }
+  .edu-school {
+    font-size: 7px;
+    color: var(--gb-mid);
+    margin-bottom: 6px;
+  }
+  .edu-detail {
+    font-family: 'VT323', monospace;
+    font-size: 16px;
+    color: var(--gb-lightest);
+  }
+
+  /* ===== HOME / BOOT SCREEN ===== */
+  .boot-screen {
+    text-align: center;
+    padding: 20px 10px;
+  }
+
+  .boot-logo {
+    font-size: clamp(16px, 4vw, 28px);
+    color: var(--gb-light);
+    text-shadow: 3px 3px 0 var(--gb-darkest), 4px 4px 0 var(--gb-dark);
+    margin-bottom: 8px;
+    line-height: 1.5;
+    animation: logoGlow 3s ease-in-out infinite;
+  }
+  @keyframes logoGlow {
+    0%,100% { text-shadow: 3px 3px 0 var(--gb-darkest), 4px 4px 0 var(--gb-dark); }
+    50% { text-shadow: 3px 3px 0 var(--gb-darkest), 4px 4px 0 var(--gb-dark), 0 0 20px rgba(155,188,15,0.5); }
+  }
+
+  .boot-subtitle {
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    color: var(--gb-mid);
+    margin-bottom: 24px;
+    animation: typewriter 2s steps(40) forwards;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+  }
+
+  .press-start {
+    font-size: 9px;
+    color: var(--gb-light);
+    animation: blink 1s step-end infinite;
+    margin-top: 16px;
+  }
+
+  .home-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 20px 0;
+    text-align: left;
+  }
+
+  .home-stat-box {
+    border: 2px solid var(--gb-dark);
+    padding: 10px;
+    background: rgba(48,98,48,0.1);
+  }
+
+  .home-stat-label {
+    font-size: 6px;
+    color: var(--gb-mid);
+    margin-bottom: 4px;
+  }
+
+  .home-stat-value {
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    color: var(--gb-lightest);
+    line-height: 1.2;
+  }
+
+  /* ===== DPAD / BOTTOM CONTROLS (decorative) ===== */
+  .bottom-controls {
+    width: 100%;
+    max-width: 900px;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+  }
+
+  .dpad {
+    display: grid;
+    grid-template-columns: repeat(3, 18px);
+    grid-template-rows: repeat(3, 18px);
+    gap: 2px;
+  }
+
+  .dpad-btn {
+    background: var(--gb-shell-dark);
+    border-radius: 2px;
+  }
+  .dpad-btn.active-dir {
+    background: var(--gb-dark);
+  }
+  .dpad-btn.corner { background: transparent; }
+
+  .ab-buttons {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .ab-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    font-family: 'Press Start 2P', monospace;
+    cursor: pointer;
+    transition: all 0.1s;
+    border: none;
+  }
+
+  .btn-a { background: var(--gb-red); color: #ffcccc; box-shadow: 0 3px 0 #5a0c0c; }
+  .btn-b { background: var(--gb-purple); color: #d4aaff; box-shadow: 0 3px 0 #2a0a4a; }
+  .btn-a:hover { transform: translateY(1px); box-shadow: 0 2px 0 #5a0c0c; }
+  .btn-b:hover { transform: translateY(1px); box-shadow: 0 2px 0 #2a0a4a; }
+  .btn-a:active { transform: translateY(3px); box-shadow: 0 0px 0 #5a0c0c; }
+  .btn-b:active { transform: translateY(3px); box-shadow: 0 0px 0 #2a0a4a; }
+
+  .select-start {
+    display: flex;
+    gap: 10px;
+  }
+
+  .ss-btn {
+    background: var(--gb-shell-darker);
+    border: none;
+    border-radius: 10px;
+    padding: 6px 14px;
+    font-size: 6px;
+    font-family: 'Press Start 2P', monospace;
+    color: var(--gb-shell);
+    cursor: pointer;
+    box-shadow: 0 2px 0 #444434;
+    transition: all 0.1s;
+    transform: rotate(-5deg);
+  }
+  .ss-btn:last-child { transform: rotate(-5deg); }
+  .ss-btn:hover { background: var(--gb-shell-dark); }
+  .ss-btn:active { transform: rotate(-5deg) translateY(2px); box-shadow: 0 0 0 #444434; }
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: var(--gb-darkest); }
+  ::-webkit-scrollbar-thumb { background: var(--gb-dark); border-radius: 0; }
+
+  /* ===== PIXEL CORNER DECORATIONS ===== */
+  .pixel-corner {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: var(--gb-dark);
+  }
+  .pc-tl { top: 0; left: 0; }
+  .pc-tr { top: 0; right: 0; }
+  .pc-bl { bottom: 0; left: 0; }
+  .pc-br { bottom: 0; right: 0; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 660px) {
+    .main-container {
+      grid-template-columns: 1fr;
+    }
+    .sidebar {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+    .profile-card { flex: 1; min-width: 200px; }
+    .nav-menu { width: 100%; }
+    .nav-item { font-size: 7px; }
+    .link-buttons { flex-direction: row; }
+    .gb-link { flex: 1; }
+    .boot-logo { font-size: 14px; }
+    .home-stats { grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+  }
+
+  /* ===== LOADING ANIMATION ===== */
+  .loading-bar-track {
+    width: 100%;
+    height: 10px;
+    background: var(--gb-darkest);
+    border: 2px solid var(--gb-dark);
+    margin: 12px 0;
+    overflow: hidden;
+  }
+  .loading-bar-fill {
+    height: 100%;
+    background: var(--gb-mid);
+    width: 0%;
+    animation: loadFill 2s ease-out forwards;
+  }
+  @keyframes loadFill { to { width: 100%; } }
+
+  /* ===== OTHER EMPLOYMENT (smaller section) ===== */
+  .other-emp-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(139,172,15,0.15);
+  }
+  .other-emp-entry:last-child { border-bottom: none; }
+  .other-emp-title { font-family: 'VT323', monospace; font-size: 18px; color: var(--gb-lightest); }
+  .other-emp-dates { font-family: 'VT323', monospace; font-size: 15px; color: var(--gb-mid); }
+
+  /* GIT LOGO pixel */
+  .pixel-icon {
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP STATUS BAR -->
+<div class="top-bar">
+  <div class="top-bar-title">RESUME.EXE<span class="blinking-cursor"></span></div>
+  <div style="display:flex;gap:12px;align-items:center;">
+    <div style="font-family:'VT323',monospace;font-size:16px;color:var(--gb-mid)">JOSHUA BARTELS v2.0</div>
+    <div class="battery-indicator">
+      <div class="battery-bar"></div>
+      <div class="battery-bar"></div>
+      <div class="battery-bar"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="main-container">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <!-- Profile Card -->
+    <div class="profile-card">
+      <div class="pixel-corner pc-tl"></div>
+      <div class="pixel-corner pc-tr"></div>
+      <div class="pixel-corner pc-bl"></div>
+      <div class="pixel-corner pc-br"></div>
+      
+      <div class="avatar-frame">
+        <!-- Pixel art avatar using SVG -->
+        <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" style="width:64px;height:64px;image-rendering:pixelated">
+          <!-- body/shirt -->
+          <rect x="4" y="8" width="8" height="6" fill="#306230"/>
+          <!-- head -->
+          <rect x="5" y="2" width="6" height="6" fill="#c4a882"/>
+          <!-- hair/beret -->
+          <rect x="5" y="2" width="6" height="2" fill="#2d1a4a"/>
+          <rect x="4" y="3" width="1" height="1" fill="#2d1a4a"/>
+          <rect x="11" y="3" width="1" height="1" fill="#2d1a4a"/>
+          <!-- eyes -->
+          <rect x="6" y="5" width="1" height="1" fill="#0f380f"/>
+          <rect x="9" y="5" width="1" height="1" fill="#0f380f"/>
+          <!-- mouth -->
+          <rect x="7" y="7" width="2" height="1" fill="#8c6042"/>
+          <!-- arms -->
+          <rect x="2" y="8" width="2" height="4" fill="#306230"/>
+          <rect x="12" y="8" width="2" height="4" fill="#306230"/>
+          <!-- hands -->
+          <rect x="2" y="12" width="2" height="1" fill="#c4a882"/>
+          <rect x="12" y="12" width="2" height="1" fill="#c4a882"/>
+          <!-- legs -->
+          <rect x="4" y="14" width="3" height="2" fill="#1a1a2e"/>
+          <rect x="9" y="14" width="3" height="2" fill="#1a1a2e"/>
+          <!-- boots -->
+          <rect x="4" y="15" width="3" height="1" fill="#4a3a00"/>
+          <rect x="9" y="15" width="3" height="1" fill="#4a3a00"/>
+          <!-- star badge -->
+          <rect x="7" y="9" width="2" height="2" fill="#9bbc0f"/>
+        </svg>
+      </div>
+
+      <div class="profile-name">JOSHUA<br>BARTELS</div>
+      <span class="profile-tag">Software Engineer<br>🎖️ Veteran</span>
+
+      <div class="stat-bars">
+        <div class="stat-row">
+          <div class="stat-label">JAVA</div>
+          <div class="stat-bar-track">
+            <div class="stat-bar-fill" style="width:85%;animation-delay:0.2s"></div>
+          </div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">K8S</div>
+          <div class="stat-bar-track">
+            <div class="stat-bar-fill" style="width:80%;animation-delay:0.4s"></div>
+          </div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">REST API</div>
+          <div class="stat-bar-track">
+            <div class="stat-bar-fill" style="width:90%;animation-delay:0.6s"></div>
+          </div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">REACT</div>
+          <div class="stat-bar-track">
+            <div class="stat-bar-fill" style="width:75%;animation-delay:0.8s"></div>
+          </div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">CLOUD</div>
+          <div class="stat-bar-track">
+            <div class="stat-bar-fill" style="width:78%;animation-delay:1s"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-menu">
+      <button class="nav-item active" data-panel="home" onclick="showPanel('home')">🏠 HOME</button>
+      <button class="nav-item" data-panel="experience" onclick="showPanel('experience')">⚔️ EXPERIENCE</button>
+      <button class="nav-item" data-panel="skills" onclick="showPanel('skills')">🛡️ SKILLS</button>
+      <button class="nav-item" data-panel="education" onclick="showPanel('education')">📜 EDUCATION</button>
+      <button class="nav-item" data-panel="contact" onclick="showPanel('contact')">📡 CONTACT</button>
+    </div>
+
+    <!-- External Links -->
+    <div class="link-buttons">
+      <a href="https://github.com/GoodBurger03" target="_blank" rel="noopener" class="gb-link gb-link-github">
+        <span class="pixel-icon">⬡</span> GITHUB
+      </a>
+      <a href="https://job-tailor-res.vercel.app" target="_blank" rel="noopener" class="gb-link">
+        <span class="pixel-icon">🔧</span> JOBTAILOR
+      </a>
+    </div>
+
+  </div><!-- /sidebar -->
+
+  <!-- CONTENT AREA -->
+  <div class="content-area">
+
+    <!-- HOME PANEL -->
+    <div class="screen-panel active" id="panel-home">
+      <div class="panel-header">
+        <span class="panel-header-icon">🎮</span>
+        PLAYER SELECT
+      </div>
+      <div class="boot-screen">
+        <div class="boot-logo">JOSH<br>BARTELS</div>
+        <div class="boot-subtitle">[ INTEGRATION ENGINEER ]</div>
+        
+        <div class="loading-bar-track">
+          <div class="loading-bar-fill"></div>
+        </div>
+
+        <div class="home-stats">
+          <div class="home-stat-box">
+            <div class="home-stat-label">CLASS</div>
+            <div class="home-stat-value">Software Engineer</div>
+          </div>
+          <div class="home-stat-box">
+            <div class="home-stat-label">ORIGIN</div>
+            <div class="home-stat-value">Liverpool, NY</div>
+          </div>
+          <div class="home-stat-box">
+            <div class="home-stat-label">BACKGROUND</div>
+            <div class="home-stat-value">US Military Veteran</div>
+          </div>
+          <div class="home-stat-box">
+            <div class="home-stat-label">LAST GUILD</div>
+            <div class="home-stat-value">Oracle (OHIP)</div>
+          </div>
+          <div class="home-stat-box">
+            <div class="home-stat-label">SECURITY LVL</div>
+            <div class="home-stat-value">Top Secret (lapsed)</div>
+          </div>
+          <div class="home-stat-box">
+            <div class="home-stat-label">STATUS</div>
+            <div class="home-stat-value" style="color:var(--gb-mid);">⚡ OPEN TO WORK</div>
+          </div>
+        </div>
+
+        <div style="font-family:'VT323',monospace;font-size:18px;color:var(--gb-lightest);line-height:1.6;text-align:left;margin-top:8px;border:2px solid var(--gb-dark);padding:12px;background:rgba(48,98,48,0.1)">
+          Self-taught developer with a military mindset: mission-first, detail-oriented, and built for high-stakes environments. Spent 3+ years at Oracle building cloud integrations for the global hospitality industry. Now leveling up and looking for the next quest.
+        </div>
+
+        <div class="press-start" style="margin-top:20px">▶ SELECT A MENU ITEM TO CONTINUE</div>
+      </div>
+    </div>
+
+    <!-- EXPERIENCE PANEL -->
+    <div class="screen-panel" id="panel-experience">
+      <div class="panel-header">
+        <span class="panel-header-icon">⚔️</span>
+        QUEST LOG // EXPERIENCE
+      </div>
+
+      <div class="exp-entry">
+        <div class="exp-company">ORACLE · REMOTE</div>
+        <div class="exp-role">Application Developer</div>
+        <div class="exp-dates">NOV 2021 – 2024</div>
+        <ul class="exp-bullets">
+          <li>Built integration solutions connecting Oracle Opera Cloud to external hospitality systems via REST APIs and event-driven architecture.</li>
+          <li>Developed scalable backend services in Java, JavaScript, Python, Node.js, and TypeScript following SOLID design principles.</li>
+          <li>Architected and managed containerized microservices on Kubernetes — handling pod lifecycle, deployments, config maps, and resource scaling.</li>
+          <li>Developed and maintained RESTful API gateways ensuring secure, reliable data exchange between enterprise systems.</li>
+          <li>Collaborated cross-functionally with product, architecture, and QA teams to ship enterprise-grade integrations on schedule.</li>
+          <li>Championed code reviews, documentation, and Agile ceremonies (standups, sprint planning, retrospectives).</li>
+        </ul>
+      </div>
+
+      <div class="exp-entry">
+        <div class="exp-company">APPLE · ORLANDO, FL</div>
+        <div class="exp-role">Senior Technical Advisor</div>
+        <div class="exp-dates">FEB 2011 – DEC 2013</div>
+        <ul class="exp-bullets">
+          <li>Primary escalation point between junior specialists and enterprise vendors — resolving complex hardware and software incidents.</li>
+          <li>Partnered with network specialists, developers, sysadmins, and security teams to identify root causes and prevent recurrence.</li>
+          <li>Delivered software and IT systems training that reduced repeat help desk inquiries and improved user self-sufficiency.</li>
+        </ul>
+      </div>
+
+      <div class="exp-entry">
+        <div class="exp-company">TLG LEARNING · RALEIGH, NC</div>
+        <div class="exp-role">Network Design Engineer Pre-Apprentice</div>
+        <div class="exp-dates">MAY 2020 – AUG 2020</div>
+        <ul class="exp-bullets">
+          <li>Earned CompTIA Network+, Linux+, and AWS Cloud Practitioner certifications — rapid mastery of industry-standard technologies.</li>
+          <li>Built automation scripts in Python to streamline network configuration and reduce manual overhead.</li>
+          <li>Developed programming fundamentals through hands-on projects from scripting to full web page development.</li>
+        </ul>
+      </div>
+
+      <div style="border:2px solid var(--gb-dark);padding:12px;background:rgba(48,98,48,0.05)">
+        <div style="font-size:7px;color:var(--gb-mid);margin-bottom:8px">OTHER EMPLOYMENT</div>
+        <div class="other-emp-entry">
+          <span class="other-emp-title">Full-Time Learning Ambassador · Amazon</span>
+          <span class="other-emp-dates">2019–2020</span>
+        </div>
+        <div class="other-emp-entry">
+          <span class="other-emp-title">Contact Case Manager · Apogee Solutions</span>
+          <span class="other-emp-dates">2017–2019</span>
+        </div>
+        <div class="other-emp-entry">
+          <span class="other-emp-title">Account Manager · Cintas</span>
+          <span class="other-emp-dates">2014–2015</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SKILLS PANEL -->
+    <div class="screen-panel" id="panel-skills">
+      <div class="panel-header">
+        <span class="panel-header-icon">🛡️</span>
+        INVENTORY // SKILLS
+      </div>
+
+      <div class="skill-category-label">LANGUAGES</div>
+      <div class="skills-grid">
+        <div class="skill-chip">Java</div>
+        <div class="skill-chip">JavaScript</div>
+        <div class="skill-chip">TypeScript</div>
+        <div class="skill-chip">Python</div>
+        <div class="skill-chip">Node.js</div>
+        <div class="skill-chip">SQL / PL-SQL</div>
+        <div class="skill-chip">HTML5</div>
+        <div class="skill-chip">CSS3</div>
+      </div>
+
+      <div class="skill-category-label">CLOUD & DEVOPS</div>
+      <div class="skills-grid">
+        <div class="skill-chip">Kubernetes</div>
+        <div class="skill-chip">Docker</div>
+        <div class="skill-chip">AWS</div>
+        <div class="skill-chip">OCI</div>
+        <div class="skill-chip">REST APIs</div>
+        <div class="skill-chip">Microservices</div>
+        <div class="skill-chip">CI/CD</div>
+        <div class="skill-chip">GitHub Actions</div>
+      </div>
+
+      <div class="skill-category-label">PLATFORMS & TOOLS</div>
+      <div class="skills-grid">
+        <div class="skill-chip">Oracle OHIP</div>
+        <div class="skill-chip">Opera Cloud</div>
+        <div class="skill-chip">Oracle APEX</div>
+        <div class="skill-chip">React</div>
+        <div class="skill-chip">Vite</div>
+        <div class="skill-chip">Linux</div>
+        <div class="skill-chip">Git</div>
+        <div class="skill-chip">Agile / Scrum</div>
+      </div>
+
+      <div class="skill-category-label">CERTIFICATIONS</div>
+      <div class="cert-row">
+        <div class="cert-icon">☁️</div>
+        <div>
+          <div class="cert-text">AWS Cloud Practitioner</div>
+          <span class="cert-sub">Amazon Web Services</span>
+        </div>
+      </div>
+      <div class="cert-row">
+        <div class="cert-icon">🐧</div>
+        <div>
+          <div class="cert-text">CompTIA Linux+</div>
+          <span class="cert-sub">CompTIA</span>
+        </div>
+      </div>
+      <div class="cert-row">
+        <div class="cert-icon">🔒</div>
+        <div>
+          <div class="cert-text">Top Secret Clearance</div>
+          <span class="cert-sub">Lapsed · US Military</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDUCATION PANEL -->
+    <div class="screen-panel" id="panel-education">
+      <div class="panel-header">
+        <span class="panel-header-icon">📜</span>
+        LORE // EDUCATION
+      </div>
+
+      <div class="edu-entry">
+        <div class="edu-degree">Bachelor of Science: Computer Science</div>
+        <div class="edu-school">UNIVERSITY OF NORTH CAROLINA WILMINGTON</div>
+      </div>
+
+      <div class="edu-entry">
+        <div class="edu-degree">Full Stack Coding Boot Camp</div>
+        <div class="edu-school">SKILL DISTILLERY · Java-Based</div>
+        <div class="edu-detail">Java · MySQL · HTML5 · CSS3</div>
+      </div>
+
+      <div style="margin-top:16px;border:2px solid var(--gb-dark);padding:14px;background:rgba(48,98,48,0.1)">
+        <div style="font-size:7px;color:var(--gb-mid);margin-bottom:10px">SIDE QUEST // ACTIVE PROJECTS</div>
+        <div class="edu-degree" style="margin-bottom:6px">JobTailor</div>
+        <div class="edu-detail" style="line-height:1.6">React/Vite portfolio app designed to demonstrate enterprise cloud skills. Features planned Azure Functions backend, Microsoft Fabric/Power BI integration, Docker/Kubernetes manifests, and CI/CD via GitHub Actions.</div>
+        <a href="https://job-tailor-res.vercel.app" target="_blank" rel="noopener" style="display:inline-block;margin-top:10px;font-family:'VT323',monospace;font-size:18px;color:var(--gb-mid);text-decoration:none;border:2px solid var(--gb-dark);padding:6px 12px;">▶ VIEW LIVE →</a>
+      </div>
+
+
+    </div>
+
+    <!-- CONTACT PANEL -->
+    <div class="screen-panel" id="panel-contact">
+      <div class="panel-header">
+        <span class="panel-header-icon">📡</span>
+        COMMS // CONTACT
+      </div>
+
+      <div class="contact-grid">
+        <a href="tel:6802423238" class="contact-item">
+          <span class="contact-icon">📞</span>
+          <span>680-242-3238</span>
+        </a>
+        <a href="/cdn-cgi/l/email-protection#92d8fde1fae7f3f0f3e0e6f7fee1a2a1a3a3d2f5fff3fbfebcf1fdff" class="contact-item">
+          <span class="contact-icon">✉️</span>
+          <span><span class="__cf_email__" data-cfemail="bff5d0ccd7cadedddecdcbdad3cc8f8c8e8effd8d2ded6d391dcd0d2">[email&#160;protected]</span></span>
+        </a>
+        <a href="https://www.linkedin.com/in/Bartels0311" target="_blank" rel="noopener" class="contact-item">
+          <span class="contact-icon">💼</span>
+          <span>linkedin.com/in/Bartels0311</span>
+        </a>
+        <a href="https://github.com/GoodBurger03" target="_blank" rel="noopener" class="contact-item">
+          <span class="contact-icon">⬡</span>
+          <span>github.com/GoodBurger03</span>
+        </a>
+        <a href="https://job-tailor-res.vercel.app" target="_blank" rel="noopener" class="contact-item">
+          <span class="contact-icon">🔧</span>
+          <span>job-tailor-res.vercel.app</span>
+        </a>
+        <div class="contact-item" style="cursor:default">
+          <span class="contact-icon">📍</span>
+          <span>Liverpool, NY</span>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;text-align:center;padding:16px;border:2px solid var(--gb-dark);">
+        <div style="font-family:'VT323',monospace;font-size:22px;color:var(--gb-light);margin-bottom:8px">AVAILABLE FOR NEW QUESTS</div>
+        <div style="font-family:'VT323',monospace;font-size:17px;color:var(--gb-lightest);line-height:1.6">
+          Open to: Software Engineer · Integration Engineer<br>
+          Solutions Engineer · Technical Program Manager<br>
+          Support Engineer · Data Analyst
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content-area -->
+</div><!-- /main-container -->
+
+<!-- GAME BOY CONTROLS (decorative + functional) -->
+<div class="bottom-controls">
+  <div class="dpad">
+    <div class="dpad-btn corner"></div>
+    <div class="dpad-btn active-dir"></div>
+    <div class="dpad-btn corner"></div>
+    <div class="dpad-btn active-dir"></div>
+    <div class="dpad-btn" style="background:var(--gb-shell-darker);border-radius:2px"></div>
+    <div class="dpad-btn active-dir"></div>
+    <div class="dpad-btn corner"></div>
+    <div class="dpad-btn active-dir"></div>
+    <div class="dpad-btn corner"></div>
+  </div>
+
+  <div class="select-start">
+    <button class="ss-btn" onclick="showPanel('skills')">SELECT</button>
+    <button class="ss-btn" onclick="showPanel('experience')">START</button>
+  </div>
+
+  <div class="ab-buttons">
+    <button class="ab-btn btn-b" onclick="showPanel('contact')" title="Contact">B</button>
+    <button class="ab-btn btn-a" onclick="showPanel('home')" title="Home">A</button>
+  </div>
+</div>
+
+<div style="font-family:'Press Start 2P',monospace;font-size:6px;color:var(--gb-dark);margin-top:16px;text-align:center">
+  © JOSHUA BARTELS · DESIGNED WITH ❤️ + ☕ · ALL RIGHTS RESERVED
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  function showPanel(id) {
+    document.querySelectorAll('.screen-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + id).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.dataset.panel === id) btn.classList.add('active');
+    });
+  }
+
+  // Keyboard navigation
+  const panels = ['home', 'experience', 'skills', 'education', 'contact'];
+  let currentPanel = 0;
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'd') {
+      currentPanel = (currentPanel + 1) % panels.length;
+      showPanel(panels[currentPa
